@@ -9,9 +9,12 @@ export function login(user, pass) {
 }
 
 export function logout() {
-  localStorage.removeItem(SESSION_KEY);
+  return localStorage.removeItem(SESSION_KEY);
 }
 
+export function getToken() {
+  return localStorage.getItem(SESSION_KEY);
+}
 export function isAuthenticated() {
-  return !!localStorage.getItem(SESSION_KEY);
+  return !!getToken();
 }

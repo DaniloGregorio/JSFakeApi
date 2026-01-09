@@ -1,25 +1,79 @@
-import { load, save } from "../storage/storage.js";
+import { fakeFetch } from "../api/api.js";
+import { getToken } from "../auth/auth.js";
 
-const KEY = "todos";
+const TODO_URL = "/todos";
 
-export function getTodos() {
-  return load(KEY);
+export async function getTodos() {
+  const res = await fakeFetch(TODO_URL, {
+    headers: {
+      Authorization: getToken(),
+    },
+  });
+
+  return res.json();
 }
 
-export function addTodo(title) {
-  const todos = load(KEY);
-  todos.push({ id: Date.now(), title, done: false });
-  save(KEY, todos);
+export async function addTodo(title) {
+  const res = await fakeFetch(TODO_URL, {
+    method: "POST",
+    headers: {
+      Authorization: getToken(),
+    },
+    body: JSON.stringify({
+      id: Date.now(),
+      title,
+      done: false,
+    }),
+  });
+
+  return res.json();
 }
 
-export function toggleTodo(id) {
-  const todos = load(KEY).map((t) =>
-    t.id === id ? { ...t, done: !t.done } : t
-  );
-  save(KEY, todos);
+export async function toggleTodo(id) {
+  const todos = await getTodos();
+
+  const updated = todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
+
+  await fakeFetch(TODO_URL, {
+    method: "DELETE",
+    headers: {
+      Authorization: getToken(),
+    },
+  });
+
+  for (const todo of updated) {
+    await fakeFetch(TODO_URL, {
+      method: "POST",
+      headers: {
+        Authorization: getToken(),
+      },
+      body: JSON.stringify(todo),
+    });
+  }
+
+  return updated;
 }
 
-export function removeTodo(id) {
-  const todos = load(KEY).filter((t) => t.id !== id);
-  save(KEY, todos);
+export async function removeTodo(id) {
+  const todos = await getTodos();
+  const filtered = todos.filter((t) => t.id !== id);
+
+  await fakeFetch(TODO_URL, {
+    method: "DELETE",
+    headers: {
+      Authorization: getToken(),
+    },
+  });
+
+  for (const todo of filtered) {
+    await fakeFetch(TODO_URL, {
+      method: "POST",
+      headers: {
+        Authorization: getToken(),
+      },
+      body: JSON.stringify(todo),
+    });
+  }
+
+  return filtered;
 }

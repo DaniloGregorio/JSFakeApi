@@ -1,24 +1,49 @@
-import { getTodos, addTodo, toggleTodo, removeTodo } from "../todo/todo.js";
+import { getTodos, addTodo, toggleTodo } from "../todo/todo.js";
 
-export function render() {
+export async function render() {
   const list = document.querySelector("#list");
   list.innerHTML = "";
 
-  getTodos().forEach((todo) => {
-    const li = document.createElement("li");
-    li.textContent = todo.title;
-    li.onclick = () => toggleTodo(todo.id);
-    list.appendChild(li);
-  });
+  try {
+    const todos = await getTodos();
+
+    todos.forEach((todo) => {
+      const li = document.createElement("li");
+      li.textContent = todo.done ? ` ${todo.title}` : todo.title;
+
+      li.onclick = async () => {
+        try {
+          await toggleTodo(todo.id);
+          render();
+        } catch (err) {
+          handleAuthError(err);
+        }
+      };
+
+      list.appendChild(li);
+    });
+  } catch (err) {
+    handleAuthError(err);
+  }
 }
 
 export function setupUI() {
-  document.querySelector("#add").onclick = () => {
+  document.querySelector("#add").onclick = async () => {
     const input = document.querySelector("#input");
-    if (input.value === "") {
-    } else {
-      addTodo(input.value);
+    if (!input.value.trim()) return;
+    try {
+      await addTodo(input.value);
+      input.value = "";
+      render();
+    } catch (err) {
+      handleAuthError(err);
     }
-    render();
   };
+}
+function handleAuthError(err) {
+  if (err?.status === 401) {
+    console.log("not authenticated");
+  } else {
+    console.error(err);
+  }
 }
