@@ -4,6 +4,7 @@ export function fakeFetch(url, options = {}) {
   const method = options.method || "GET";
 
   return new Promise((resolve, reject) => {
+    //timeout function to simulate a server response
     setTimeout(() => {
       try {
         if (url !== "/login") {
