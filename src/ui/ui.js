@@ -1,3 +1,4 @@
+import { Login } from "../auth/auth.js";
 import { getTodos, addTodo, toggleTodo } from "../todo/todo.js";
 
 export async function render() {
@@ -46,4 +47,23 @@ function handleAuthError(err) {
   } else {
     console.error(err);
   }
+}
+
+export function LoginData() {
+  document.querySelector("#login").onclick = async () => {
+    const user = {
+      name: document.querySelector("#loginname").value,
+      pass: document.querySelector("loginpass").value,
+    };
+
+    if (!dataInput.value.trim()) return;
+    try {
+      const result = Login({ user });
+      if (result == true) {
+        await addTodo(user.name, user.pass);
+      }
+    } catch (err) {
+      handleAuthError(err);
+    }
+  };
 }

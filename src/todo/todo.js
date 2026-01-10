@@ -13,7 +13,7 @@ export async function getTodos() {
   return res.json();
 }
 
-export async function addTodo(title) {
+export async function addTodo(user, pass) {
   const res = await fakeFetch(TODO_URL, {
     method: "POST",
     headers: {
@@ -21,7 +21,8 @@ export async function addTodo(title) {
     },
     body: JSON.stringify({
       id: Date.now(),
-      title,
+      user,
+      pass,
       done: false,
     }),
   });

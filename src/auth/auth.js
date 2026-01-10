@@ -1,12 +1,15 @@
-const SESSION_KEY = "session";
-//create the token based in login/pass
-export function login(user, pass) {
-  //no validation of user(mocked data)
-  if (user === "admin" && pass === "123") {
-    localStorage.setItem(SESSION_KEY, "token");
-    return true;
+const loginData = [{ name: "Danilo", pass: "123" }];
+
+const SESSION_KEY = loginData.filter(
+  (value) => value.name === userInput.trim().toLowerCase()
+);
+
+export function Login({ name, pass }) {
+  if (name.loginData !== name.userInput && pass.loginData !== pass.userInput) {
+    return false;
   }
-  return false;
+  localStorage.setItem(SESSION_KEY, "token");
+  return true;
 }
 
 export function logout() {
@@ -16,6 +19,7 @@ export function logout() {
 export function getToken() {
   return localStorage.getItem(SESSION_KEY);
 }
-export function isAuthenticated() {
+
+export function IsAuthenticated() {
   return !!getToken();
 }
