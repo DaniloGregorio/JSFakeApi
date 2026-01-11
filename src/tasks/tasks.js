@@ -1,10 +1,10 @@
 import { fakeFetch } from "../api/api.js";
 import { getToken } from "../auth/auth.js";
 
-const TODO_URL = "/todos";
+const TASK_URL = "/task";
 
-export async function getTodos() {
-  const res = await fakeFetch(TODO_URL, {
+export async function getTasks() {
+  const res = await fakeFetch(TASK_URL, {
     headers: {
       Authorization: getToken(),
     },
@@ -13,8 +13,8 @@ export async function getTodos() {
   return res.json();
 }
 
-export async function addTodo(user, pass) {
-  const res = await fakeFetch(TODO_URL, {
+export async function addTask(user, pass) {
+  const res = await fakeFetch(TASK_URL, {
     method: "POST",
     headers: {
       Authorization: getToken(),
@@ -30,36 +30,36 @@ export async function addTodo(user, pass) {
   return res.json();
 }
 
-export async function toggleTodo(id) {
+export async function toggleTask(id) {
   const todos = await getTodos();
 
   const updated = todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
 
-  await fakeFetch(TODO_URL, {
+  await fakeFetch(TASK_URL, {
     method: "DELETE",
     headers: {
       Authorization: getToken(),
     },
   });
 
-  for (const todo of updated) {
-    await fakeFetch(TODO_URL, {
+  for (const task of updated) {
+    await fakeFetch(TASK_URL, {
       method: "POST",
       headers: {
         Authorization: getToken(),
       },
-      body: JSON.stringify(todo),
+      body: JSON.stringify(task),
     });
   }
 
   return updated;
 }
 
-export async function removeTodo(id) {
+export async function removeTask(id) {
   const todos = await getTodos();
   const filtered = todos.filter((t) => t.id !== id);
 
-  await fakeFetch(TODO_URL, {
+  await fakeFetch(TASK_URL, {
     method: "DELETE",
     headers: {
       Authorization: getToken(),
@@ -67,7 +67,7 @@ export async function removeTodo(id) {
   });
 
   for (const todo of filtered) {
-    await fakeFetch(TODO_URL, {
+    await fakeFetch(TASK_URL, {
       method: "POST",
       headers: {
         Authorization: getToken(),

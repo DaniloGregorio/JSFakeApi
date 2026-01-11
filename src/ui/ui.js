@@ -1,20 +1,20 @@
 import { Login } from "../auth/auth.js";
-import { getTodos, addTodo, toggleTodo } from "../todo/todo.js";
+import { getTasks, addTask, toggleTask } from "../tasks/tasks.js";
 
 export async function render() {
   const list = document.querySelector("#list");
   list.innerHTML = "";
 
   try {
-    const todos = await getTodos();
+    const todos = await getTasks();
 
-    todos.forEach((todo) => {
+    todos.forEach((task) => {
       const li = document.createElement("li");
-      li.textContent = todo.done ? ` ${todo.title}` : todo.title;
+      li.textContent = task.done ? ` ${task.title}` : task.title;
 
       li.onclick = async () => {
         try {
-          await toggleTodo(todo.id);
+          await toggleTask(task.id);
           render();
         } catch (err) {
           handleAuthError(err);
@@ -33,7 +33,7 @@ export function setupUI() {
     const input = document.querySelector("#input");
     if (!input.value.trim()) return;
     try {
-      await addTodo(input.value);
+      await addTask(input.value);
       input.value = "";
       render();
     } catch (err) {
@@ -60,7 +60,7 @@ export function LoginData() {
     try {
       const result = Login({ user });
       if (result == true) {
-        await addTodo(user.name, user.pass);
+        await addTask(user.name, user.pass);
       }
     } catch (err) {
       handleAuthError(err);
