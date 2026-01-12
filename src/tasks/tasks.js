@@ -1,7 +1,7 @@
 import { fakeFetch } from "../api/api.js";
 import { getToken } from "../auth/auth.js";
 
-const TASK_URL = "/task";
+const TASK_URL = "/login";
 
 export async function getTasks() {
   const res = await fakeFetch(TASK_URL, {

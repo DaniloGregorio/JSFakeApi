@@ -1,33 +1,6 @@
 import { Login } from "../auth/auth.js";
 import { getTasks, addTask, toggleTask } from "../tasks/tasks.js";
 
-export async function render() {
-  const list = document.querySelector("#list");
-  list.innerHTML = "";
-
-  try {
-    const todos = await getTasks();
-
-    todos.forEach((task) => {
-      const li = document.createElement("li");
-      li.textContent = task.done ? ` ${task.title}` : task.title;
-
-      li.onclick = async () => {
-        try {
-          await toggleTask(task.id);
-          render();
-        } catch (err) {
-          handleAuthError(err);
-        }
-      };
-
-      list.appendChild(li);
-    });
-  } catch (err) {
-    handleAuthError(err);
-  }
-}
-
 export function setupUI() {
   document.querySelector("#add").onclick = async () => {
     const input = document.querySelector("#input");

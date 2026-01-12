@@ -5,7 +5,7 @@ export function fakeFetch(url, options = {}) {
 
   return new Promise((resolve, reject) => {
     try {
-      if (url !== "/login") {
+      if (url == "/login") {
         const token = options.headers?.Authorization;
 
         if (!token) {
